@@ -10,7 +10,12 @@ from common.utils import epsilon_scheduler, beta_scheduler, update_target, print
 from model import DQN
 from common.replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
 
-def train(env, args, writer): 
+import wandb
+
+def train(env, args): 
+    # Init WandB
+    wandb.init(config=args)
+
     current_model = DQN(env, args).to(args.device)
     target_model = DQN(env, args).to(args.device)
 
@@ -73,8 +78,10 @@ def train(env, args, writer):
             state = env.reset()
             reward_list.append(episode_reward)
             length_list.append(episode_length)
-            writer.add_scalar("data/episode_reward", episode_reward, frame_idx)
-            writer.add_scalar("data/episode_length", episode_length, frame_idx)
+            wandb.log({
+                'episode_reward': episode_reward,
+                'episode_length': episode_length,
+                })
             episode_reward, episode_length = 0, 0
             state_deque.clear()
             reward_deque.clear()
@@ -84,7 +91,7 @@ def train(env, args, writer):
             beta = beta_by_frame(frame_idx)
             loss = compute_td_loss(current_model, target_model, replay_buffer, optimizer, args, beta)
             loss_list.append(loss.item())
-            writer.add_scalar("data/loss", loss.item(), frame_idx)
+            wandb.log({'loss': loss.item()})
 
         if frame_idx % args.update_target == 0:
             update_target(current_model, target_model)

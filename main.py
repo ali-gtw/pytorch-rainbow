@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 import gym
 import time, os
-from tensorboardX import SummaryWriter
 
 from common.utils import create_log_dir, print_args, set_global_seeds
 from common.wrappers import make_atari, wrap_atari_dqn
@@ -17,8 +16,6 @@ def main():
     print_args(args)
 
     log_dir = create_log_dir(args)
-    if not args.evaluate:
-        writer = SummaryWriter(log_dir)
 
     env = make_atari(args.env)
     env = wrap_atari_dqn(env, args)
@@ -31,10 +28,8 @@ def main():
         env.close()
         return
 
-    train(env, args, writer)
+    train(env, args)
 
-    writer.export_scalars_to_json(os.path.join(log_dir, "all_scalars.json"))
-    writer.close()
     env.close()
 
 
