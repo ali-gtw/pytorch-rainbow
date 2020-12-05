@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import gym
 import time, os
+import wandb
 
 from common.utils import create_log_dir, print_args, set_global_seeds
 from common.wrappers import make_atari, wrap_atari_dqn
@@ -16,6 +17,7 @@ def main():
     print_args(args)
 
     log_dir = create_log_dir(args)
+    wandb.init(project="pytorch-rainbow", config=args)
 
     env = make_atari(args.env)
     env = wrap_atari_dqn(env, args)
