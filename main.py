@@ -17,7 +17,10 @@ def main():
     print_args(args)
 
     log_dir = create_log_dir(args)
-    wandb.init(project="pytorch-rainbow", config=args)
+    wandb.init(project=args.wandb_project,
+     name=args.wandb_name,
+     notes=args.wandb_notes,
+     config=args)
 
     env = make_atari(args.env)
     env = wrap_atari_dqn(env, args)

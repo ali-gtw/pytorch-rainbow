@@ -88,6 +88,14 @@ def get_args():
     parser.add_argument('--lr', type=float, default=1e-4, metavar='η',
                         help='Learning rate')
 
+    # WandB Arguments
+    parser.add_argument('--wandb-project', type=str, default='pytorch-rainbow',
+                        help='WandB project name') 
+    parser.add_argument('--wandb-name', type=str, default='dqn',
+                        help='WandB name')
+    parser.add_argument('--wandb-notes', type=str, default='',
+                        help='WandB project name')
+
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     args.device = torch.device("cuda" if args.cuda else "cpu")
